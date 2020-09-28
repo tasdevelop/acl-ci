@@ -12,9 +12,7 @@ class Acos extends MY_Controller {
      * @AclName Acos Fetch
      */
     public function fetch() {
-
         $this->listFolderFiles();
-        // redirect('login');
     }
 
     /**
@@ -29,6 +27,7 @@ class Acos extends MY_Controller {
         }
 
         $ffs = scandir($dir);
+
         unset($ffs[0], $ffs[1]);
         // prevent empty ordered elements
         if (count($ffs) < 1)
@@ -42,11 +41,8 @@ class Acos extends MY_Controller {
                 $this->listFolderFiles($dir . '/' . $ff);
             elseif (is_file($dir . '/' . $ff) && strpos($ff,'.php') !== false) {
                 $classes = $this->get_php_classes(file_get_contents($dir . '/' . $ff));
-                print_r($classes);
+                include_once($dir.'/'.$ff);
                 foreach($classes AS $class){
-                    if(!class_exists($class)){
-                        include_once($dir.$ff);
-                    }
                     $methods = $this->get_class_methods($class, true);
                     foreach($methods as $method){
                         if(isset($method['docComment']['AclName'])){
@@ -80,7 +76,7 @@ class Acos extends MY_Controller {
 
     public function get_class_methods($class, $comment = false){
         $r = new ReflectionClass($class);
-        $methods=array();
+
         foreach($r->getMethods() AS $m){
             if($m->class == $class){
                 $arr = ['name'=>$m->name];

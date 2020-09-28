@@ -9,7 +9,7 @@
         </tr>
     </thead>
     <tbody>
-        
+
         <?php
         foreach($users AS $user){
             ?>
@@ -22,6 +22,6 @@
         <?php
         }
         ?>
-        
+
     </tbody>
 </table>

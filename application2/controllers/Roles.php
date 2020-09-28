@@ -1,5 +1,5 @@
 <?php
-
+ 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Roles extends My_Controller {
@@ -18,7 +18,7 @@ class Roles extends My_Controller {
         $roles = $this->RolesModel->getList();
         $this->render('Roles/list',['roles'=>$roles]);
     }
-
+    
     /**
      * This is the org list
      * @AclName Add
@@ -27,25 +27,24 @@ class Roles extends My_Controller {
         $data = [];
         $acos = $this->AcosModel->getList();
         if($this->input->server('REQUEST_METHOD') == 'POST'){
-            print_r($this->input->post());
-            // if($this->_validateForm()){
-            //     log_message('info','form validated');
-
-            //     $data = $this->input->post(); //get formatted data
-            //     $this->_save($data);
-            //     redirect('/roles/');
-            // } else {
-
-            //     log_message('info','form validation errors');
-            //     $data = $this->input->post(); //get un-formatted data
-            // }
+            if($this->_validateForm()){
+                log_message('info','form validated');
+                
+                $data = $this->input->post(); //get formatted data
+                $this->_save($data);
+                redirect('/roles/');
+            } else {
+                
+                log_message('info','form validation errors');
+                $data = $this->input->post(); //get un-formatted data
+            }
         }
         $this->render('Roles/add',['data'=>$data, 'acos'=>$acos]);
     }
 
     /**
      * validate form
-     *
+     * 
      * @return boolean
      */
     private function _validateForm(){
@@ -67,14 +66,14 @@ class Roles extends My_Controller {
         //return validation value in boolean
         return $this->form_validation->run();
     }
-
+    
     /**
      * Save record
-     *
+     * 
      * @param type $data
      */
     private function _save($data){
-
+        
         $this->RolesModel->save($data);
     }
 
@@ -83,37 +82,37 @@ class Roles extends My_Controller {
      * @AclName Edit
      */
     public function edit($id) {
-
+        
         $acos = $this->AcosModel->getList();
         $data = $this->RolesModel->getById($id);
         if(empty($data)){
             redirect('roles/');
         }
-
+        
         $data['role_permission'] = strpos($data['acos'], ',') === false? [$data['acos']] : explode(', ', $data['acos']);
-
+        
         if($this->input->server('REQUEST_METHOD') == 'POST'){
             if($this->_validateForm()){
                 log_message('info','form validated');
-
+                
                 $data = $this->input->post(); //get formatted data
                 $data['id'] = $id;
                 $this->_save($data);
-
+                
                 redirect('roles/');
             } else {
-
+                
                 log_message('info','form validation errors');
                 $data = $this->input->post(); //get un-formatted data
             }
         }
         $this->render('Roles/edit',['data'=>$data, 'acos'=>$acos]);
     }
-
+    
     /**
      * delete role
-     *
-     * Note: change this functionality for security purpose,
+     * 
+     * Note: change this functionality for security purpose, 
      * @param type $id
      * @AclName Delete
      */
@@ -125,10 +124,10 @@ class Roles extends My_Controller {
         $this->RolesModel->delete($id);
         redirect('/roles/');
     }
-
+    
     /**
      * validate name
-     *
+     * 
      * @param type $name
      * @return boolean
      */

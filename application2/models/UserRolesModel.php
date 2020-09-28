@@ -9,7 +9,7 @@ class UserRolesModel extends MY_Model {
         $table = $this->table;
         $alias = $this->alias;
         $this->db->from($table . ' as ' . $alias);
-
+        
         if (!empty($conditions)) {
             $this->db->where($conditions);
         }
@@ -24,21 +24,21 @@ class UserRolesModel extends MY_Model {
             return $this->db->get()->result_array();
         }
     }
-
+    
     public function getByUserID($user_id){
         return $this->getList(['user_id'=>$user_id]);
     }
-
+    
     public function saveBatch($data) {
         $insert = [];
         if (isset($data['roles'])) {
+
             $records = $this->getList(['user_id' => $data['user_id']], true);
             if (empty($records)) {
                 foreach ($data['roles'] as $role) {
                     $insert[] = [
                         'user_id' => $data['user_id'],
-                        'role_id' => $role,
-                        'modifiedby'=>$this->session->userdata('username')
+                        'role_id' => $role
                     ];
                 }
                 return $this->insertBatch($insert);
@@ -55,13 +55,12 @@ class UserRolesModel extends MY_Model {
                     foreach ($inserts as $val) {
                         $insert[] = [
                             'role_id' => $val,
-                            'user_id' => $data['user_id'],
-                            'modifiedby'=>$this->session->userdata('username')
+                            'user_id' => $data['user_id']
                         ];
                     }
                     $this->insertBatch($insert);
                 }
-
+                
                 if (!empty($removes)) {
                     $remove = [];
                     foreach ($removes as $val) {
@@ -77,7 +76,7 @@ class UserRolesModel extends MY_Model {
         }
         return false;
     }
-
+    
     protected function getListByGroup($conditions){
         $this->db->select('GROUP_CONCAT('. $this->alias .'.role_id SEPARATOR ",") as roles ')
                 ->where($conditions)
@@ -86,12 +85,12 @@ class UserRolesModel extends MY_Model {
         return $this->db->get()->result_array();
 
     }
-
+    
     /**
      * delete by role
-     *
+     * 
      * Note: Please make this function secure and safe
-     *
+     * 
      * @param type $role_id
      * @return boolean
      */

@@ -106,7 +106,7 @@ class UsersModel extends MY_Model {
      * @param type $password
      * @return hash password
      */
-    private function _hashPassword($password){
+    public function _hashPassword($password){
         return hash('sha256', $password);
     }
 
@@ -136,7 +136,7 @@ class UsersModel extends MY_Model {
      */
     public function verifyLogin($username, $password){
         $user = $this->getList(['username'=>$username]);
-
+        // print_r($user);
         if(!empty($user)){
 
             if($user[0]['password'] === $this->_hashPassword($password)){

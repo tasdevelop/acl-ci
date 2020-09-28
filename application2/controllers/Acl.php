@@ -1,56 +1,41 @@
 <?php
 
-class Acos extends MY_Controller {
+class Acl extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('AcosModel');
+        $this->load->model('AclModel');
     }
 
-    /**
-     * fetch the controllers and methods and save it into database
-     * @AclName Acos Fetch
-     */
+    public function index() {
+        exit(__FUNCTION__);
+    }
+
     public function fetch() {
-
         $this->listFolderFiles();
-        // redirect('login');
     }
 
-    /**
-     * List Folder Files
-     *
-     * @param string $dir
-     * @return type
-     */
     public function listFolderFiles($dir = null) {
-        if ($dir === null){
+        if ($dir === null)
             $dir = constant('APPPATH') . 'controllers/';
-        }
-
         $ffs = scandir($dir);
         unset($ffs[0], $ffs[1]);
         // prevent empty ordered elements
         if (count($ffs) < 1)
             return;
-
         $i = 0;
-
         foreach ($ffs as $ff) {
 
             if (is_dir($dir . '/' . $ff))
                 $this->listFolderFiles($dir . '/' . $ff);
             elseif (is_file($dir . '/' . $ff) && strpos($ff,'.php') !== false) {
                 $classes = $this->get_php_classes(file_get_contents($dir . '/' . $ff));
-                print_r($classes);
+                include_once($dir.'/'.$ff);
                 foreach($classes AS $class){
-                    if(!class_exists($class)){
-                        include_once($dir.$ff);
-                    }
                     $methods = $this->get_class_methods($class, true);
                     foreach($methods as $method){
                         if(isset($method['docComment']['AclName'])){
-                            $this->AcosModel->save(['class'=>$class, 'method'=>$method['name'], 'display_name'=>$method['docComment']['AclName']]);
+                            $this->AclModel->save(['class'=>$class, 'method'=>$method['name'], 'display_name'=>$method['docComment']['AclName']]);
                         }
                     }
 
@@ -80,7 +65,7 @@ class Acos extends MY_Controller {
 
     public function get_class_methods($class, $comment = false){
         $r = new ReflectionClass($class);
-        $methods=array();
+
         foreach($r->getMethods() AS $m){
             if($m->class == $class){
                 $arr = ['name'=>$m->name];

@@ -19,12 +19,12 @@ foreach($acos as $aco){
         if($i > 0) { echo '</li></ul>'; }
         $i++;
         //print the class name
-        ?>
+        ?> 
         <li> <b> <?php echo $aco['class']; ?> </b><ul>
         <?php
     }
     ?>
-                <li> <?php
+                <li> <?php 
                 $checked = isset($data['role_permission']) && in_array($aco['id'], $data['role_permission'])?true:false;
                 echo form_checkbox('role_permission[]', $aco['id'], $checked); echo form_label($aco['method']); ?>  </li>
                 <?php
@@ -35,7 +35,7 @@ foreach($acos as $aco){
 </ul>
     <?php
 echo br(2);
-echo form_submit('save','Save');
+echo form_submit('save','Save'); 
 echo anchor('/roles/','Cancel');
 echo form_close();
 ?>

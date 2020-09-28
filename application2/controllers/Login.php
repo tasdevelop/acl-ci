@@ -1,15 +1,15 @@
 <?php
 
 class Login extends MY_Controller{
-    
+
     public function __construct(){
         parent::__construct();
         $this->load->model('UsersModel');
     }
-    
+
     /**
      * Login page
-     * 
+     *
      * @AclName Login
      */
     public function index(){
@@ -22,6 +22,7 @@ class Login extends MY_Controller{
             if($this->_validateForm()){
                 $data = $this->input->post();
                 $user = $this->UsersModel->verifyLogin($data['username'], $data['password']);
+                echo $this->UsersModel->_hashPassword($data['password']);
                 if(!empty($user)){
                     $this->session->set_userdata('user',$user['id']);
                     $this->session->set_userdata('logged_in',true);
@@ -29,15 +30,16 @@ class Login extends MY_Controller{
                 } else {
                     $error = 'Invalid credentials';
                 }
+                // print_r($user);
             }
-            
+
         }
         $this->render('login', ['error' => $error]);
     }
-    
+
     /**
      * Logout page
-     * 
+     *
      * @AclName Logout
      */
     public function logout(){
@@ -46,10 +48,10 @@ class Login extends MY_Controller{
         $this->session->unset_userdata('groups.guest');
         redirect('/login');
     }
-    
+
     /**
      * validate form
-     * 
+     *
      * @return boolean
      */
     private function _validateForm(){
